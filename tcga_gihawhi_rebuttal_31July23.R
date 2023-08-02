@@ -16,9 +16,12 @@ require(biomformat) # 1.22.0
 require(Rhdf5lib) # 1.16.0
 require(EnvStats) # 2.4.0
 require(ggbeeswarm) # 0.7.1
+require(foreach)
 
-numCores <- detectCores()
-registerDoMC(cores=numCores)
+#numCores <- detectCores()
+#registerDoMC(cores=numCores)
+registerDoMC(cores=8)
+
 
 #------------------------------------------------------#
 # Input data
@@ -358,6 +361,9 @@ mlMulticlass <- function(metaData = metadataSamplesMerged_PT_HMS,
   
   resPredFun <- function(mlModel){
     resPred <- mlModel$pred
+    variable_importance<-varImp(mlModel)
+    return(variable_importance)
+    xgb.plot.tree(model = mlModel, trees = 1)
     
     ## Split folds and calculate perf on each fold
     resPredSplit <- split(resPred, resPred$Resample)
@@ -517,6 +523,4 @@ caret::confusionMatrix(hmsMulticlassMLRes_BDN$resPredAll$pred,
 #       Balanced Accuracy : 0.9276          
 #                                           
 #        'Positive' Class : BRCA   
-
-
 
