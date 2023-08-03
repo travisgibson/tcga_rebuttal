@@ -19,6 +19,11 @@ require(EnvStats) # 2.4.0
 require(ggbeeswarm) # 0.7.1
 require(phyloseq) # 1.38.0
 
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("phyloseq")
+
 numCores <- detectCores()
 registerDoMC(cores=numCores)
 
@@ -267,6 +272,8 @@ mlMulticlass <- function(metaData = metadataSamplesMergedWIS_PT_HMS,
   
   resPredFun <- function(mlModel){
     resPred <- mlModel$pred
+    variable_importance<-varImp(mlModel)
+    return(variable_importance)
     
     ## Split folds and calculate perf on each fold
     resPredSplit <- split(resPred, resPred$Resample)
@@ -428,4 +435,5 @@ caret::confusionMatrix(hmsMulticlassMLRes_BDN$resPredAll$pred,
 #        'Positive' Class : BRCA
 
 
-
+temp<-countMerged_PT_HMS['Rhizobium']
+summary(temp)
